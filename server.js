@@ -1,18 +1,8 @@
-import http from "http";
+import "dotenv/config"
+import app from './src/app.js';
 
 const PORT = 3000;
 
-const routes = {
-  "/": "Curso de node",
-  "/books": "Rota de livros",
-  "/autors": "Rota de autores"
-}
-
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end(routes[req.url]);
-});
-
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server linstenin on port ${PORT}`);
 });
