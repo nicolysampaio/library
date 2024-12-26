@@ -1,4 +1,5 @@
 import Book from "../models/Book.js";
+import { Author } from "../models/Author.js";
 
 class BookController {
   static async getAllBooks(req, res) {
@@ -29,11 +30,11 @@ class BookController {
 
   static async createBook(req, res) {
     try {
-      const book = await Book.create(req.body);
+      const author = await Author.findById(req.body.author);
+      const bookData = { ...req.body, author: { ...author._doc } };
+      const book = await Book.create(bookData);
 
-      res
-        .status(201)
-        .json({ message: "Book created with success!", Book: book });
+      res.status(201).json({ message: "Book created with success!", book });
     } catch (error) {
       res.status(500).json({
         message: "An error occurred while creating the book.",
@@ -44,7 +45,7 @@ class BookController {
 
   static async updateBook(req, res) {
     try {
-      await Book.findByIdAndUpdate(req.params.id);
+      await Book.findByIdAndUpdate(req.params.id, req.body);
 
       res.status(201).json({ message: "Book updated with success!" });
     } catch (error) {
