@@ -15,6 +15,21 @@ class BookController {
     }
   }
 
+  static async getBooksByPublisher(req, res) {
+    try {
+      const booksByPublisher = await Book.find({
+        publisher: req.query.publisher,
+      });
+
+      res.status(200).json(booksByPublisher);
+    } catch (error) {
+      res.status(500).json({
+        message: "An error occurred while fetching the books.",
+        error: error.message,
+      });
+    }
+  }
+
   static async getBookById(req, res) {
     try {
       const book = await Book.findById(req.params.id);
