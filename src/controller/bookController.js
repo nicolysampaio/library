@@ -1,10 +1,9 @@
 import Book from "../models/Book.js";
-import { Author } from "../models/Author.js";
 
 class BookController {
-  static async getAllBooks(req, res) {
+  static getAllBooks = async (req, res) => {
     try {
-      const books = await Book.find({});
+      const books = await Book.find().populate("author").exec();
 
       res.status(200).json(books);
     } catch (error) {
@@ -13,9 +12,9 @@ class BookController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async getBooksByPublisher(req, res) {
+  static getBooksByPublisher = async (req, res) => {
     try {
       const booksByPublisher = await Book.find({
         publisher: req.query.publisher,
@@ -28,11 +27,13 @@ class BookController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async getBookById(req, res) {
+  static getBookById = async (req, res) => {
     try {
-      const book = await Book.findById(req.params.id);
+      const book = await Book.findById(req.params.id)
+        .populate("author", "name")
+        .exec();
 
       res.status(200).json(book);
     } catch (error) {
@@ -41,13 +42,13 @@ class BookController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async createBook(req, res) {
+  static createBook = async (req, res) => {
     try {
-      const author = await Author.findById(req.body.author);
-      const bookData = { ...req.body, author: { ...author._doc } };
-      const book = await Book.create(bookData);
+      let bookData = new Book(req.body);
+
+      const book = await bookData.save();
 
       res.status(201).json({ message: "Book created with success!", book });
     } catch (error) {
@@ -56,11 +57,11 @@ class BookController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async updateBook(req, res) {
+  static updateBook = async (req, res) => {
     try {
-      await Book.findByIdAndUpdate(req.params.id, req.body);
+      await Book.findByIdAndUpdate(req.params.id, { $set: req.body });
 
       res.status(201).json({ message: "Book updated with success!" });
     } catch (error) {
@@ -69,9 +70,9 @@ class BookController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async deleteBook(req, res) {
+  static deleteBook = async (req, res) => {
     try {
       await Book.findByIdAndDelete(req.params.id);
 
@@ -82,7 +83,7 @@ class BookController {
         error: error.message,
       });
     }
-  }
+  };
 }
 
 export default BookController;
