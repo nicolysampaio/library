@@ -1,7 +1,7 @@
 import { Author } from "../models/Author.js";
 
 class AuthorController {
-  static async getAllAuthors(req, res) {
+  static getAllAuthors = async (req, res) => {
     try {
       const authors = await Author.find({});
 
@@ -12,9 +12,9 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async getAuthorById(req, res) {
+  static getAuthorById = async (req, res) => {
     try {
       const author = await Author.findById(req.params.id);
 
@@ -25,11 +25,13 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async createAuthor(req, res) {
+  static createAuthor = async (req, res) => {
     try {
-      const author = await Author.create(req.body);
+      let authorData = new Author(req.body);
+
+      const author = await authorData.save();
 
       res.status(201).json({ message: "Author created with success!", author });
     } catch (error) {
@@ -38,11 +40,11 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async updateAuthor(req, res) {
+  static updateAuthor = async (req, res) => {
     try {
-      await Author.findByIdAndUpdate(req.params.id, req.body);
+      await Author.findByIdAndUpdate(req.params.id, { $set: req.body });
 
       res.status(201).json({ message: "Author updated with success!" });
     } catch (error) {
@@ -51,9 +53,9 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async deleteAuthor(req, res) {
+  static deleteAuthor = async (req, res) => {
     try {
       await Author.findByIdAndDelete(req.params.id);
 
@@ -64,7 +66,7 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 }
 
 export default AuthorController;
