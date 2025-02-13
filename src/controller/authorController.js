@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Author } from "../models/Author.js";
 
 class AuthorController {
-  static async getAllAuthors(req, res) {
+  static getAllAuthors = async (req, res) => {
     try {
       const authors = await Author.find();
 
@@ -13,9 +13,9 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async getAuthorById(req, res) {
+  static getAuthorById = async (req, res) => {
     try {
       const id = req.params.id;
       const author = await Author.findById(id);
@@ -35,12 +35,13 @@ class AuthorController {
         });
       }
     }
-  }
+  };
 
-  static async createAuthor(req, res) {
+  static createAuthor = async (req, res) => {
     try {
-      let author = new Author(req.body);
-      const authorResult = await author.save();
+      let authorData = new Author(req.body);
+
+      const author = await authorData.save();
 
       res.status(201).send(authorResult.toJSON());
     } catch (error) {
@@ -49,9 +50,9 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async updateAuthor(req, res) {
+  static updateAuthor = async (req, res) => {
     try {
       const id = req.params.id;
       await Author.findByIdAndUpdate(id, { $set: req.body });
@@ -63,9 +64,9 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 
-  static async deleteAuthor(req, res) {
+  static deleteAuthor = async (req, res) => {
     try {
       const id = req.params.id;
       await Author.findByIdAndDelete(id);
@@ -77,7 +78,7 @@ class AuthorController {
         error: error.message,
       });
     }
-  }
+  };
 }
 
 export default AuthorController;
